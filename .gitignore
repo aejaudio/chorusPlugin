@@ -1,0 +1,17 @@
+# Build files
+Builds/
+build/
+
+# Generated code
+JuceLibraryCode/
+
+# IDE
+.vs/
+.vscode/
+*.xcodeproj
+*.xcworkspace
+*.sln
+*.vcxproj
+
+# OS
+.DS_Store
