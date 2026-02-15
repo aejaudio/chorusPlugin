@@ -25,7 +25,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
     
     float averageDelay = (delays[0] + delays[1] + delays[2]) /3.0f;
     updateCounter++;
-    if (updateCounter >= 256)
+    if (updateCounter >= 2048)
     {
         filter.updateCoeff(averageDelay);
         updateCounter = 0;
@@ -52,11 +52,12 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
     // write input to delay line
     delayData[writePos] = inputSample;
     delaySum = filter.biquadFilter(delaySum) * 1.5;
-    delaySum = filter.asymmetricSaturation(delaySum, 4.0f, 2.0f);
-    
+//    delaySum = filter.asymmetricSaturation(delaySum, 2.0f, 1.0f);
+//    delaySum *= 0.3f;
     
     // Mix dry and wet
     sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
+//    sample = (inputSample) + (delaySum * mix);
     
     // Increment write position
     writePos = (writePos + 1) % delayBufferSize;

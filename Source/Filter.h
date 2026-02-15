@@ -16,6 +16,7 @@ public:
     void reset();
     
     float asymmetricSaturation(float input, float driveAdd, float driveSubtract);
+    float saturate(float input, float drive);
     
 private:
 //    DelayLine delay;
@@ -28,19 +29,19 @@ private:
     
     // As delay time modulates
     float currentStages;
-    float baseCutOff = 8000.0f;
+    float baseCutOff = 12000.0f;
     float cutoff;
     float pi = juce::MathConstants<float>::pi;
     float w0;
     
     float alpha;;
     
-    float b0 = 1.0f;
-    float b1 = 0.0f;
-    float b2 = 0.0f;
-    float a0 = 0.0f;
-    float a1 = 0.0f;
-    float a2 = 0.0f;
+    float b0;
+    float b1;
+    float b2;
+    float a0;
+    float a1;
+    float a2;
     
     
     
@@ -49,14 +50,17 @@ private:
     float b2_smooth;
     float a1_smooth;
     float a2_smooth;
-    float smoothing = 0.999f;
+    float smoothing = 0.9995f;
     
     float x1 = 0.0f;
     float x2 = 0.0f;
     float y1 = 0.0f;
     float y2 = 0.0f;
     const float Q = 0.5f;
+    
     float drive = 3.0f;
+    float scaled = 0.0f;
+    float saturated = 0.0f;
 
     
     float delayTime;

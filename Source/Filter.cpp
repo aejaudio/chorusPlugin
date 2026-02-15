@@ -4,11 +4,16 @@
 #include <fstream>
 Filter::Filter()
 {
-    b0_smooth = 1.0f;
-    b1_smooth = 0.0f;
-    b2_smooth = 0.0f;
-    a1_smooth = 0.0f;
-    a2_smooth = 0.0f;
+    b0 = 1.0f;
+    b1 = 0.0f;
+    b2 = 0.0f;
+    a1 = 0.0f;
+    a2 = 0.0f;
+    b0_smooth = b0;
+    b1_smooth = b1;
+    b2_smooth = b2;
+    a1_smooth = a1;
+    a2_smooth = a2;
 }
 
 void Filter::prepare(double currentSampleRate, float delayTime)
@@ -113,7 +118,23 @@ void Filter::updateCoeff(float delayTime)
 float Filter::asymmetricSaturation(float input, float driveAdd, float driveSubtract)
 {
     if (input > 0.0f)
-        return std::tanh(input * driveAdd) / driveAdd;
+    {
+        float output = saturate(input, driveAdd);
+        return output;
+    }
     else
-        return std::tanh(input * driveSubtract) / driveSubtract;
+    {
+        float output = saturate(input, driveAdd);
+        return output;
+    }
+    
+    
+}
+float Filter::saturate(float input, float drive)
+{
+    float output = std::tanh(input * drive) / drive;
+    scaled = input * drive;
+    saturated = tanh(scaled);
+    output = saturated / drive;
+    return output;
 }
