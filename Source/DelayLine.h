@@ -1,6 +1,7 @@
 
 #pragma once
 #include <JuceHeader.h>
+#include "Filter.h"
 
 class Chorus;
 class DelayLine
@@ -12,7 +13,7 @@ public:
     }
 
     ~DelayLine();
-    void prepare(double sampleRate, int size);
+    void prepare(double sampleRate);
     void processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, int sampleRate, float totalDelay);
     void setDelayTime(float newDelayTime);
     void reset();
@@ -27,7 +28,9 @@ public:
     
 private:
     
+    
     juce::AudioProcessorValueTreeState& apvts;
+    Filter filter;
     void fillBuffer(juce::AudioBuffer<float> &buffer, juce::AudioBuffer<float> &delayBuffer, int channel, float* channelData, int bufferSize, int delayBufferSize);
     void readFromBuffer(juce::AudioBuffer<float> &buffer, juce::AudioBuffer<float> &delayBuffer,int channel, float* channelData, int bufferSize, int delayBufferSize);
     
@@ -45,6 +48,10 @@ private:
     int readPosition { 0 };
     float delayTime = { 0.015f };
     float totalDelay = 0.0f;
+    
+    
+    int updateCounter = 0;
+
     
 
 };

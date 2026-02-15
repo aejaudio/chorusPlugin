@@ -15,6 +15,8 @@
       <FILE id="gDXoym" name="DelayLine.h" compile="0" resource="0" file="Source/DelayLine.h"/>
       <FILE id="ZhsSDN" name="Chorus.cpp" compile="1" resource="0" file="Source/Chorus.cpp"/>
       <FILE id="NDa1bN" name="Chorus.h" compile="0" resource="0" file="Source/Chorus.h"/>
+      <FILE id="ho919N" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
+      <FILE id="sjxBk1" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>
@@ -37,7 +39,7 @@
   <EXPORTFORMATS>
     <XCODE_MAC targetFolder="Builds/MacOSX">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Chorus2"/>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Chorus2" osxArchitecture="64BitIntel"/>
         <CONFIGURATION isDebug="0" name="Release" targetName="Chorus2"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -11,6 +11,7 @@
 #include <JuceHeader.h>
 #include "DelayLine.h"
 #include "Chorus.h"
+#include "Filter.h"
 
 //==============================================================================
 /**
@@ -67,6 +68,9 @@ private:
     
     Chorus chorus;
     
+    
+//    juce::AudioProcessorValueTreeState& apvts;
+
     // Can be accessed by multiple threads simultaneously (Audio and GUI)
     std::atomic<float>* feedbackParameter = nullptr;
     std::atomic<float>* delayTimeParameter = nullptr;
@@ -77,5 +81,5 @@ private:
     
     int leftWritePos = 0;
     int rightWritePos = 0;
-
+    
 };

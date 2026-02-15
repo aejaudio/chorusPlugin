@@ -15,21 +15,12 @@ Chorus2AudioProcessorEditor::Chorus2AudioProcessorEditor (Chorus2AudioProcessor&
 {
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
-    setSize (800, 800);
+    setSize (600, 300);
 
-    
-    // Delay Time
-    delayTimeKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
-    delayTimeKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 10);
-    delayTimeKnob.setRange(0.010f, 0.040f, 0.02f);
-    addAndMakeVisible(delayTimeKnob);
     
     delayTimeLabel.setText("Base Delay", juce::dontSendNotification);
     delayTimeLabel.setJustificationType(juce::Justification(juce::Justification::centred));
     addAndMakeVisible(delayTimeLabel);
-    
-    // Attach slider to parameter
-    delayTimeAttachment = std::make_unique<juce::AudioProcessorValueTreeState::SliderAttachment>(processor.apvts, "DELAYTIME", delayTimeKnob);
     
     // Depth
     depthKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
@@ -99,19 +90,19 @@ void Chorus2AudioProcessorEditor::resized()
 {
     
     int knobSize = 100;
-    delayTimeLabel.setBounds(120, 60, knobSize, 20);
-    delayTimeKnob.setBounds(120, 85, knobSize, knobSize);
+    depthLabel.setBounds(120, 60, knobSize, 20);
+    depthKnob.setBounds(120, 85, knobSize, knobSize);
     
-    depthLabel.setBounds(20, 60, knobSize, 20);
-    depthKnob.setBounds(20, 85, knobSize, knobSize);
+    rateLabel.setBounds(20, 60, knobSize, 20);
+    rateKnob.setBounds(20, 85, knobSize, knobSize);
     
-    rateLabel.setBounds(240, 60, knobSize, 20);
-    rateKnob.setBounds(240, 85, knobSize, knobSize);
+    mixLabel.setBounds(240, 60, knobSize, 20);
+    mixKnob.setBounds(240, 85, knobSize, knobSize);
     
-    mixLabel.setBounds(360, 60, knobSize, 20);
-    mixKnob.setBounds(360, 85, knobSize, knobSize);
-    
-    widthLabel.setBounds(480, 60, knobSize, 20);
-    widthKnob.setBounds(480, 85, knobSize, knobSize);
+    widthLabel.setBounds(360, 60, knobSize, 20);
+    widthKnob.setBounds(360, 85, knobSize, knobSize);
+//    
+//    widthLabel.setBounds(480, 60, knobSize, 20);
+//    widthKnob.setBounds(480, 85, knobSize, knobSize);
 }
 

@@ -1,10 +1,10 @@
 
 #include "Chorus.h"
-
+#include <fstream>
 void Chorus::prepare(double sampleRate)
 {
 
-    
+    delayLine->prepare(sampleRate);
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
     baseDelay = 0.025f;
@@ -34,7 +34,7 @@ void Chorus::reset()
 }
 void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, double sampleRate, int& writePos, bool isLeft)
 {
-    
+ 
     currentDepth += (targetDepth - currentDepth) * 0.001f;
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
     for (int i = 0; i < bufferSize; ++i)
@@ -118,6 +118,7 @@ float Chorus::calculateTotalDelay(float baseDelay, float mod)
 void Chorus::setBaseDelay(float newBaseDelay)
 {
     baseDelay = newBaseDelay;
+    delayLine->setDelayTime(baseDelay);
 }
 
 void Chorus::setRate(float newRate, double sampleRate)

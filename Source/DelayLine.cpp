@@ -1,35 +1,66 @@
 
 #include "DelayLine.h"
+#include <fstream>
 
 DelayLine::~DelayLine()
 {
     reset();
 }
-void DelayLine::prepare(double sampleRate, int size)
-{
-
-}
-void DelayLine::processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, int sampleRate, float totalDelay)
+void DelayLine::prepare(double sampleRate)
 {
     
-    // Calculate delay in samples, 50ms
-    int delaySamplesInt = static_cast<int>(totalDelay * sampleRate);
-
-    float delaySamplesFloat = totalDelay * sampleRate;
-    
-    // Calculate readPosition
-    readPosition = writePosition - delaySamplesInt;
-    
-
-    fractionalDelay(delayData, bufferData, bufferSize, delayBufferSize, delaySamplesFloat);
-    
+    filter.reset();
+    filter.prepare(sampleRate, 0.02f);
 }
+
 
 void DelayLine::reset()
 {
     writePosition = 0;
 }
 
+void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix)
+{
+    
+    
+    float averageDelay = (delays[0] + delays[1] + delays[2]) /3.0f;
+    updateCounter++;
+    if (updateCounter >= 256)
+    {
+        filter.updateCoeff(averageDelay);
+        updateCounter = 0;
+    }
+    // Store clean input
+    float inputSample = sample;
+
+    float delaySum = 0;
+    for (int i = 0; i < delays.size(); i++)
+    {
+        float delaySamplesFloat = calculateDelayFloat(delays.at(i), sampleRate);
+
+        // Calculate read position for linear interpolation
+        float currentReadPosition = static_cast<float>(writePos) - delaySamplesFloat;
+        
+        // Read delayed sample with interpolation
+        float delayedSample = linearInterpolation(delayData, currentReadPosition, delayBufferSize);
+  
+          delaySum += delayedSample;
+        
+    }
+    delaySum = delaySum / 3.0f;
+    
+    // write input to delay line
+    delayData[writePos] = inputSample;
+    delaySum = filter.biquadFilter(delaySum) * 1.5;
+    delaySum = filter.asymmetricSaturation(delaySum, 4.0f, 2.0f);
+    
+    
+    // Mix dry and wet
+    sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
+    
+    // Increment write position
+    writePos = (writePos + 1) % delayBufferSize;
+}
 float DelayLine::linearInterpolation(float* buffer, float readPosition, int bufferSize)
 {
     // Handle negative read positions
@@ -140,38 +171,6 @@ void DelayLine::setDelayTime(float newDelayTime)
 float DelayLine::getDelayTime()
 {
     return delayTime;
-}
-void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix)
-{
-    
-    // Store clean input
-    float inputSample = sample;
-
-    float delaySum = 0;
-    for (int i = 0; i < delays.size(); i++)
-    {
-        float delaySamplesFloat = calculateDelayFloat(delays.at(i), sampleRate);
-
-        // Calculate read position for linear interpolation
-        float currentReadPosition = static_cast<float>(writePos) - delaySamplesFloat;
-        
-        // Read delayed sample with interpolation
-        float delayedSample = linearInterpolation(delayData, currentReadPosition, delayBufferSize);
-  
-          delaySum += delayedSample;
-        
-    }
-    delaySum = delaySum / 3.0f;
-    
-    // write input to delay line
-    delayData[writePos] = inputSample;
-    
-    
-    // Mix dray and wet
-    sample = (inputSample * (1.0f - mix)) + (delaySum * mix);
-    
-    // Increment write position
-    writePos = (writePos + 1) % delayBufferSize;
 }
 
 float DelayLine::calculateDelayFloat(float totalDelay, double sampleRate)

@@ -8,7 +8,7 @@
 
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
-
+#include <fstream>
 //==============================================================================
 Chorus2AudioProcessor::Chorus2AudioProcessor()
 #ifndef JucePlugin_PreferredChannelConfigurations
@@ -22,6 +22,7 @@ Chorus2AudioProcessor::Chorus2AudioProcessor()
                        ), apvts (*this, nullptr, "Parameters", createParameters()), chorus(apvts) // pass reference to chorus and initialize chorus
 #endif
 {
+    
 }
 
 Chorus2AudioProcessor::~Chorus2AudioProcessor()
@@ -94,7 +95,8 @@ void Chorus2AudioProcessor::changeProgramName (int index, const juce::String& ne
 //==============================================================================
 void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
-    
+
+
     delayTimeParameter = apvts.getRawParameterValue("DELAYTIME");
     jassert (delayTimeParameter != nullptr);
     
@@ -116,7 +118,7 @@ void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     delayBuffer.setSize(getTotalNumOutputChannels(), static_cast<int>(delayBufferSize));
     // Prevents noises and clicks
     delayBuffer.clear();
-    
+
     chorus.prepare(sampleRate);
 
 }
@@ -165,7 +167,7 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     // Load atomic float from apvts thread safe
     // Read current value stored in feedbackParameter and return as float
-    chorus.setBaseDelay(delayTimeParameter->load(std::memory_order_relaxed));
+    chorus.setBaseDelay(0.12f);
     chorus.setRate(rateParameter->load(std::memory_order_relaxed), sampleRate);
     chorus.setDepth(depthParameter->load(std::memory_order_relaxed));
     chorus.setMix(mixParameter->load(std::memory_order_relaxed));
@@ -207,12 +209,22 @@ void Chorus2AudioProcessor::getStateInformation (juce::MemoryBlock& destData)
     // You should use this method to store your parameters in the memory block.
     // You could do that either as raw data, or use the XML or ValueTree classes
     // as intermediaries to make it easy to save and load complex data.
+    
+    auto state = apvts.copyState();
+    std::unique_ptr<juce::XmlElement> xml (state.createXml());
+    copyXmlToBinary(*xml, destData);
 }
 
 void Chorus2AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
 {
     // You should use this method to restore your parameters from this memory block,
     // whose contents will have been created by the getStateInformation() call.
+    
+    std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary(data, sizeInBytes));
+    
+    if (xmlState.get() != nullptr)
+        if(xmlState->hasTagName (apvts.state.getType()))
+            apvts.replaceState(juce::ValueTree::fromXml (*xmlState));
 }
 
 //==============================================================================
@@ -237,11 +249,11 @@ juce::AudioProcessorValueTreeState::ParameterLayout
                               juce::NormalisableRange<float> // range( min, max )
                               ( 0.0f, 0.9f), 0.7f));         // default value
         
-        parameters.push_back(std::make_unique<juce::AudioParameterFloat>
-                             ( juce::ParameterID {"DELAYTIME",1},
-                              "Base Delay",
-                              juce::NormalisableRange<float>
-                              ( 0.010f, 0.040f), 0.020f));
+//        parameters.push_back(std::make_unique<juce::AudioParameterFloat>
+//                             ( juce::ParameterID {"DELAYTIME",1},
+//                              "Base Delay",
+//                              juce::NormalisableRange<float>
+//                              ( 0.010f, 0.040f), 0.020f));
         
         parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.001f, 0.010), 0.01f));
         
