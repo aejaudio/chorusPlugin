@@ -68,6 +68,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
         delaySum = filterR.asymmetricSaturation(delaySum, 2.0f, 1.0f);
     }
     
+    delaySum *= 2.0f;
     sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
     
     // Increment write position

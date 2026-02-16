@@ -68,8 +68,6 @@ float Filter::biquadFilter(float inputSample)
     
 // 
     float output = ((b0_smooth * inputSample) + (b1_smooth * (x1)) + (b2_smooth * (x2)) - (a1_smooth * y1) - (a2_smooth * y2));
-//    
-//    float output = b0 * inputSample + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
     
     output = std::clamp(output, -2.0f, 2.0f);
     
