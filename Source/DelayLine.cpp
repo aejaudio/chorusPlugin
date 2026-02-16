@@ -24,9 +24,9 @@ void DelayLine::reset()
 void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft)
 {
     // reduce input to prevent clipping
-    sample *= 0.7f;
+//    sample *= 0.7f;
     
-    float averageDelay = (delays[0] + delays[1] + delays[2]) /3.0f;
+    float averageDelay = (delays[0] + delays[1] + delays[2] + delays[3] + delays[4] + delays[5]) / 6.0f;
 
     if (isLeft)
     {
@@ -53,7 +53,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
           delaySum += delayedSample;
         
     }
-    delaySum = delaySum / 3.0f;
+    delaySum = delaySum / 6.0f;
     
     // write input to delay line
     delayData[writePos] = inputSample;

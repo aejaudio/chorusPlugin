@@ -9,8 +9,8 @@ void Chorus::prepare(double sampleRate)
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
 //    baseDelay = 0.015f;
-    delayLine->setDelayTime(baseDelay);
-//    depth = 0.015f;
+//    delayLine->setDelayTime(baseDelay);
+    depth = 0.015f;
     mix = 0.5f;
     
     // Initialze depth smoothing
@@ -18,11 +18,11 @@ void Chorus::prepare(double sampleRate)
     targetDepth = depth;
     
     lfoPhase1 = 0.0f;
-    lfoPhase2 = juce::MathConstants<float>::twoPi / 3.0f;
-    lfoPhase3 = juce::MathConstants<float>::twoPi * 2.0f / 3.0f;
+    lfoPhase2 = juce::MathConstants<float>::twoPi / 5.0f;
+    lfoPhase3 = juce::MathConstants<float>::twoPi * 2.0f / 5.0f;
     lfoPhase4 = juce::MathConstants<float>::pi;
-    lfoPhase5 = juce::MathConstants<float>::pi + juce::MathConstants<float>::twoPi / 3.0f;
-    lfoPhase6 = juce::MathConstants<float>::pi + juce::MathConstants<float>::twoPi * 2.0f / 3.0f;
+    lfoPhase5 = juce::MathConstants<float>::pi + juce::MathConstants<float>::twoPi / 5.0f;
+    lfoPhase6 = juce::MathConstants<float>::pi + juce::MathConstants<float>::twoPi * 2.0f / 5.0f;
     
  
 }
@@ -48,38 +48,42 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
             lfo1 = lfo(lfoPhase1);
             lfo2 = lfo(lfoPhase2);
             lfo3 = lfo(lfoPhase3);
+            lfo4 = lfo(lfoPhase7);
+            lfo5 = lfo(lfoPhase8);
+            lfo6 = lfo(lfoPhase9);
             mod1 = modulation(currentDepth, lfo1);
             mod2 = modulation(currentDepth, lfo2);
             mod3 = modulation(currentDepth, lfo3);
+            mod4 = modulation(currentDepth, lfo4);
+            mod5 = modulation(currentDepth, lfo5);
+            mod6 = modulation(currentDepth, lfo6);
         }
         else
         {
             lfo1 = lfo(lfoPhase4);
             lfo2 = lfo(lfoPhase5);
             lfo3 = lfo(lfoPhase6);
+            lfo4 = lfo(lfoPhase10);
+            lfo5 = lfo(lfoPhase11);
+            lfo6 = lfo(lfoPhase12);
             mod1 = modulation(currentDepth, lfo1);
             mod2 = modulation(currentDepth, lfo2);
             mod3 = modulation(currentDepth, lfo3);
+            mod4 = modulation(currentDepth, lfo4);
+            mod5 = modulation(currentDepth, lfo5);
+            mod6 = modulation(currentDepth, lfo6);
         }
     
         float delay1 = calculateTotalDelay(baseDelay, mod1);
         float delay2 = calculateTotalDelay(baseDelay, mod2);
         float delay3 = calculateTotalDelay(baseDelay, mod3);
-        
-        static int counter = 0;
-            if (++counter % 48000 == 0)
-            {
-                std::cout << "BaseDelay: " << baseDelay
-                          << " | Depth: " << depth
-                          << " | LFO1: " << lfo1
-                          << " | Mod1: " << mod1
-                          << " | Delay1: " << delay1
-                          << " | Delay2: " << delay2
-                          << " | Delay3: " << delay3 << std::endl;
-            }
+        float delay4 = calculateTotalDelay(baseDelay, mod4);
+        float delay5 = calculateTotalDelay(baseDelay, mod5);
+        float delay6 = calculateTotalDelay(baseDelay, mod6);
+    
             
         
-        std::vector<float> delays = {delay1, delay2, delay3};
+        std::vector<float> delays = {delay1, delay2, delay3, delay4, delay5, delay6};
         // Process single sample
         delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft);
         // Safety clip
@@ -160,14 +164,20 @@ void Chorus::setWidth(float newWidth)
     
     // Distribute phase across voices
     lfoPhase1 = 0.0f;
-    lfoPhase2 = phase / 3.0f;
-    lfoPhase3 = (phase * 2.0f) / 3.0f;
+    lfoPhase2 = phase / 5.0f;
+    lfoPhase3 = (phase * 2.0f) / 5.0f;
+    lfoPhase7 = (phase * 3.0f) / 5.0f;
+    lfoPhase8 = (phase * 4.0f) / 5.0f;
+    lfoPhase9 = phase;
     
     
     // Right channel opposite phases
     lfoPhase4 = pi;
     lfoPhase5 = pi + phase / 3.0f;
     lfoPhase6 = pi + (phase * 2.0f) / 3.0f;
+    lfoPhase10 = (phase * 3.0f) / 5.0f;
+    lfoPhase11 = (phase * 4.0f) / 5.0f;
+    lfoPhase12 = phase;
 }
 
 float Chorus::setPhase(float newWidth)

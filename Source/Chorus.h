@@ -28,6 +28,9 @@ private:
     float lfo1;
     float lfo2;
     float lfo3;
+    float lfo4;
+    float lfo5;
+    float lfo6;
 
     float lfoPhase1;
     float lfoPhase2;
@@ -35,6 +38,12 @@ private:
     float lfoPhase4;
     float lfoPhase5;
     float lfoPhase6;
+    float lfoPhase7;
+    float lfoPhase8;
+    float lfoPhase9;
+    float lfoPhase10;
+    float lfoPhase11;
+    float lfoPhase12;
     int width = 1;
     
     // Frequency of LFO in Hz
@@ -44,6 +53,9 @@ private:
     float mod1;
     float mod2;
     float mod3;
+    float mod4;
+    float mod5;
+    float mod6;
     float depth;
     float baseDelay;
     float delayTime = 0.0f;

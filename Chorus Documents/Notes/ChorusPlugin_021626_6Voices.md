@@ -3,16 +3,16 @@
 Multiband Chorus effect plugin built with JUCE.
 - Currently no multiband implementation 
 
-02/16/26
+02/16/26 - 6 Voices
 
 ## Demo
 
 Audio demo:
-https://github.com/aejaudio/chorusPlugin1/blob/main/Chorus%20Documents/Chorus_021626_3Delays/Chorus_021626_3Delays.wav
+https://github.com/aejaudio/chorusPlugin1/blob/main/Chorus%20Documents/Chorus_021626_6Voices/Chorus_021626_6Voices.wav
 
 Video walkthrough:
 
-https://github.com/aejaudio/chorusPlugin1/blob/main/Chorus%20Documents/Chorus_021626_3Delays/My%20Chorus_021626_3Delays_AudioVideo.mp4
+https://github.com/aejaudio/chorusPlugin1/blob/main/Chorus%20Documents/Chorus_021626_6Voices/Chorus_021626_6Voices_AudioVideo.mp4
 
 ## Current Progress
 
@@ -48,7 +48,7 @@ https://github.com/aejaudio/chorusPlugin1/blob/main/Chorus%20Documents/Chorus_02
 
 ### BBD Emulation
 - **Base Delay:** 25ms (configurable)
-- **Number of Stages:** 3 
+- **Number of Stages:** 6
 - **Filter Type:** 2nd-order Butterworth lowpass implemented as Biquad filter
 - **Cutoff Calculation:** Dynamic based on delay time
 
@@ -68,7 +68,7 @@ Input → BBD Delay Stages → Lowpass Filter → Saturation → Mix → Output
 - [ ] Add feedback parameter
 - [ ] Add voices parameter - Could be wiggle knob
 - [ ] Add Multiband control
-
+- [ ] Gain decreases when chorus engaged
 
 ## Credits
 

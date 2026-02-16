@@ -172,7 +172,7 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     // Load atomic float from apvts thread safe
     // Read current value stored in feedbackParameter and return as float
-    chorus.setBaseDelay(0.015f);
+    chorus.setBaseDelay(0.025f);
     chorus.setRate(rateParameter->load(std::memory_order_relaxed), sampleRate);
     chorus.setDepth(depthParameter->load(std::memory_order_relaxed));
     chorus.setMix(mixParameter->load(std::memory_order_relaxed));
