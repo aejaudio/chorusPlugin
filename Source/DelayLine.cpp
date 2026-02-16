@@ -21,7 +21,7 @@ void DelayLine::reset()
     writePosition = 0;
 }
 
-void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft)
+void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft, std::vector<double> voiceMixes)
 {
     // reduce input to prevent clipping
 //    sample *= 0.7f;
@@ -50,7 +50,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
         // Read delayed sample with interpolation
         float delayedSample = linearInterpolation(delayData, currentReadPosition, delayBufferSize);
   
-          delaySum += delayedSample;
+          delaySum += delayedSample * voiceMixes.at(i);
         
     }
     delaySum = delaySum / 6.0f;
@@ -68,7 +68,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
         delaySum = filterR.asymmetricSaturation(delaySum, 2.0f, 1.0f);
     }
     
-    delaySum *= 2.0f;
+    delaySum *= 3.0f;
     sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
     
     // Increment write position
@@ -173,3 +173,4 @@ void DelayLine::processFilter(float averageDelay, Filter filter)
         updateCounter = 0;
     }
 }
+

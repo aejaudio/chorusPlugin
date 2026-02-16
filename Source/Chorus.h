@@ -3,6 +3,7 @@
 
 #include <JuceHeader.h>
 #include "DelayLine.h"
+#include "Pulse.h"
 #include <random>
 class Chorus
 {
@@ -23,6 +24,7 @@ public:
     void setMix(float newMix);
     void setWidth(float newWidth);
     float setPhase(float newWidth);
+    void setPulse(Pulse pulse);
     
 private:
     float lfo1;
@@ -75,6 +77,23 @@ private:
     float currentDepth = 0.005f;
     
     std::unique_ptr<DelayLine> delayLine;
+    
+    double currentPosition;
+    float voiceMix1;
+    float voiceMix2;
+    float voiceMix3;
+    float voiceMix4;
+    float voiceMix5;
+    float voiceMix6;
+    
+    float voicePhase1;
+    float voicePhase2;
+    float voicePhase3;
+    float voicePhase4;
+    float voicePhase5;
+    float voicePhase6;
+    
+    float twoPi = juce::MathConstants<float>::twoPi;
     
 
 };

@@ -180,7 +180,27 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     
     int bufferSize = buffer.getNumSamples(); // buffer size
     
+    auto* playHead = getPlayHead();
     
+    if(playHead != nullptr)
+    {
+        auto positionInfo = playHead->getPosition();
+        
+        if (auto bpm = positionInfo->getBpm())
+        {
+            pulse.setBPM(*bpm);
+        }
+        if (auto ppqPosition = positionInfo->getPpqPosition())
+        {
+            pulse.setPosition(*ppqPosition);
+        }
+        if (auto isPlaying = positionInfo->getIsPlaying())
+        {
+            pulse.setIsPlaying(isPlaying);
+        }
+    }
+    
+    chorus.setPulse(pulse);
     // Process left channel
        if (totalNumInputChannels > 0)
        {

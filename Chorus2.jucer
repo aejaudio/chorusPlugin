@@ -17,6 +17,8 @@
       <FILE id="NDa1bN" name="Chorus.h" compile="0" resource="0" file="Source/Chorus.h"/>
       <FILE id="ho919N" name="Filter.cpp" compile="1" resource="0" file="Source/Filter.cpp"/>
       <FILE id="sjxBk1" name="Filter.h" compile="0" resource="0" file="Source/Filter.h"/>
+      <FILE id="qmCIsH" name="Pulse.cpp" compile="1" resource="0" file="Source/Pulse.cpp"/>
+      <FILE id="ixfSQw" name="Pulse.h" compile="0" resource="0" file="Source/Pulse.h"/>
     </GROUP>
   </MAINGROUP>
   <MODULES>

@@ -23,7 +23,7 @@ public:
     int delayGetNumSamples();
     float getDelayTime();
     void calculateTotalDelay();
-    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft);
+    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft,std::vector<double> voiceMixes);
     float calculateDelayFloat(float totalDelay, double sampleRate);
     
 private:
