@@ -25,7 +25,7 @@ Chorus2AudioProcessorEditor::Chorus2AudioProcessorEditor (Chorus2AudioProcessor&
     // Depth
     depthKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     depthKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 10);
-    depthKnob.setRange(0.001f, 0.010f, 0.01f);
+    depthKnob.setRange(0.00f, 0.08f, 0.015f);
     addAndMakeVisible(depthKnob);
     
     depthLabel.setText("Depth", juce::dontSendNotification);
@@ -37,7 +37,7 @@ Chorus2AudioProcessorEditor::Chorus2AudioProcessorEditor (Chorus2AudioProcessor&
     // Rate
     rateKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     rateKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 10);
-    rateKnob.setRange(0.1f, 3.0f, 0.1f);
+    rateKnob.setRange(0.1f, 5.0f, 0.1f);
     addAndMakeVisible(rateKnob);
     
     rateLabel.setText("Rate", juce::dontSendNotification);

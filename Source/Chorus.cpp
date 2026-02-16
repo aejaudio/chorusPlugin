@@ -7,7 +7,7 @@ void Chorus::prepare(double sampleRate)
     delayLine->prepare(sampleRate);
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
-    baseDelay = 0.025f;
+    baseDelay = 0.040f;
     depth = 0.005f;
     mix = 0.5f;
     
@@ -66,7 +66,7 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
         
         std::vector<float> delays = {delay1, delay2, delay3};
         // Process single sample
-        delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix);
+        delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft);
         // Safety clip
         bufferData[i] = juce::jlimit((-1.0f), 1.0f, bufferData[i]);
     }

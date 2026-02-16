@@ -9,8 +9,10 @@ DelayLine::~DelayLine()
 void DelayLine::prepare(double sampleRate)
 {
     
-    filter.reset();
-    filter.prepare(sampleRate, 0.02f);
+    filterL.reset();
+    filterL.prepare(sampleRate, 0.02f);
+    filterR.reset();
+    filterR.prepare(sampleRate, 0.02f);
 }
 
 
@@ -19,16 +21,20 @@ void DelayLine::reset()
     writePosition = 0;
 }
 
-void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix)
+void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft)
 {
-    
+    // reduce input to prevent clipping
+    sample *= 0.7f;
     
     float averageDelay = (delays[0] + delays[1] + delays[2]) /3.0f;
-    updateCounter++;
-    if (updateCounter >= 2048)
+
+    if (isLeft)
     {
-        filter.updateCoeff(averageDelay);
-        updateCounter = 0;
+        processFilter(averageDelay, filterL);
+    }
+    else
+    {
+        processFilter(averageDelay, filterR);
     }
     // Store clean input
     float inputSample = sample;
@@ -51,16 +57,23 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
     
     // write input to delay line
     delayData[writePos] = inputSample;
-    delaySum = filter.biquadFilter(delaySum) * 1.5;
-//    delaySum = filter.asymmetricSaturation(delaySum, 2.0f, 1.0f);
-//    delaySum *= 0.3f;
+    if (isLeft)
+    {
+        delaySum = filterL.biquadFilter(delaySum);
+        delaySum = filterL.asymmetricSaturation(delaySum, 2.0f, 1.0f);
+    }
+    else
+    {
+        delaySum = filterR.biquadFilter(delaySum);
+        delaySum = filterR.asymmetricSaturation(delaySum, 2.0f, 1.0f);
+    }
     
-    // Mix dry and wet
     sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
-//    sample = (inputSample) + (delaySum * mix);
     
     // Increment write position
     writePos = (writePos + 1) % delayBufferSize;
+    
+
 }
 float DelayLine::linearInterpolation(float* buffer, float readPosition, int bufferSize)
 {
@@ -133,36 +146,6 @@ void DelayLine::setFeedback(float newFeedback)
     // Clamp it for stability (never goes to 1.0 or higher)
     feedback = juce::jlimit (0.0f, 0.9f, newFeedback);
 }
-    // Fractional Delay
-    // y(n) = x(n - D)
-void DelayLine::fractionalDelay(float* delayChannelData, float* bufferChannelData, int bufferSize, int delayBufferSize, float delaySamples)
-{
-    for (int sample = 0; sample < bufferSize; ++sample)
-    {
-        // Store clean input
-        float inputSample = bufferChannelData[sample];
-        
-        // Calculate read position in float for linear interpolation
-        float currentReadPosition = static_cast<float>(writePosition - delaySamples);
-        
-       // Use linear interpolation function to read delayed sample
-       // x(n-M) = input signal from M units in the past (delayedSample)
-        float delayedSample = linearInterpolation(delayChannelData, currentReadPosition, delayBufferSize);
-        
-        // Write to delay line
-        // y(n) = x(n - D)
-        // x(n) = current sample
-        // D = delay in sample
-        delayChannelData[writePosition] = inputSample;
-        
-        
-        // Add delayed sample with input sample to get output and 50% dry, 50% wet
-        bufferChannelData[sample] = (inputSample * 0.5f) + (delayedSample * 0.5f);
-        
-        //Increment write position
-        writePosition = (writePosition + 1) % delayBufferSize;
-    }
-}
 
 void DelayLine::setDelayTime(float newDelayTime)
 {
@@ -180,4 +163,12 @@ float DelayLine::calculateDelayFloat(float totalDelay, double sampleRate)
     return delayedSamplesFloat;
 }
 
-
+void DelayLine::processFilter(float averageDelay, Filter filter)
+{
+    updateCounter++;
+    if (updateCounter >= 512)
+    {
+        filter.updateCoeff(averageDelay);
+        updateCounter = 0;
+    }
+}

@@ -50,7 +50,7 @@ private:
     float b2_smooth;
     float a1_smooth;
     float a2_smooth;
-    float smoothing = 0.9995f;
+    float smoothing = 0.999f;
     
     float x1 = 0.0f;
     float x2 = 0.0f;

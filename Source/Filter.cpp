@@ -24,9 +24,6 @@ void Filter::prepare(double currentSampleRate, float delayTime)
     
     cutoff = baseCutOff / std::sqrt(currentStages/ numStages);
     
-    
-//    cutoff = baseCutOff / (std::sqrt(currentStages) / numStages);
-    cutoff = 8000.0f;
     w0 = 2 * pi * cutoff / sampleRate;
     
     alpha = std::sin(w0) / (2.0f * Q);
@@ -69,19 +66,24 @@ float Filter::biquadFilter(float inputSample)
     a1_smooth = a1_smooth * smoothing + a1 * (1.0f - smoothing);
     a2_smooth = a2_smooth * smoothing + a2 * (1.0f - smoothing);
     
+// 
     float output = ((b0_smooth * inputSample) + (b1_smooth * (x1)) + (b2_smooth * (x2)) - (a1_smooth * y1) - (a2_smooth * y2));
 //    
 //    float output = b0 * inputSample + b1 * x1 + b2 * x2 - a1 * y1 - a2 * y2;
     
     output = std::clamp(output, -2.0f, 2.0f);
     
-//    output = std::tanh(output * drive) / drive;
+    if (std::abs(output) < 1e-15f)
+    {
+        output = 0.0f;
+    }
     // Update state for next sample
     x2 = x1;
     x1 = inputSample;
     y2 = y1;
     y1 = output;
-    
+
+
     return output;
 }
 

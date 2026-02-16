@@ -113,11 +113,16 @@ void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
     jassert(widthParameter != nullptr);
     
     // Initialize delay buffer to 2 seconds of audio
-    delayBufferSize = static_cast<int>(sampleRate * 2.0);
+    int newDelayBufferSize = static_cast<int>(sampleRate * 2.0);
     // Set size of delayBuffer outputs and delayBufferSize in samples
     delayBuffer.setSize(getTotalNumOutputChannels(), static_cast<int>(delayBufferSize));
-    // Prevents noises and clicks
-    delayBuffer.clear();
+    
+    if (delayBuffer.getNumSamples() != newDelayBufferSize || delayBuffer.getNumChannels() != getTotalNumOutputChannels())
+    {
+        delayBufferSize = newDelayBufferSize;
+        delayBuffer.setSize(getTotalNumOutputChannels(), delayBufferSize);
+        delayBuffer.clear();
+    }
 
     chorus.prepare(sampleRate);
 
@@ -255,9 +260,9 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 //                              juce::NormalisableRange<float>
 //                              ( 0.010f, 0.040f), 0.020f));
         
-        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.001f, 0.010), 0.01f));
+        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.01f, 0.08), 0.015f));
         
-        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"RATE", 1}, "Rate", juce::NormalisableRange<float> (0.1f, 3.0f), 1.0f));
+        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"RATE", 1}, "Rate", juce::NormalisableRange<float> (0.1f, 5.0f), 1.0f));
         
         parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"MIX", 1}, "Mix", juce::NormalisableRange<float> (0.1f, 1.0f), 0.5f));
         

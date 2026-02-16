@@ -23,14 +23,15 @@ public:
     int delayGetNumSamples();
     float getDelayTime();
     void calculateTotalDelay();
-    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix);
+    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft);
     float calculateDelayFloat(float totalDelay, double sampleRate);
     
 private:
     
     
     juce::AudioProcessorValueTreeState& apvts;
-    Filter filter;
+    Filter filterL;
+    Filter filterR;
     void fillBuffer(juce::AudioBuffer<float> &buffer, juce::AudioBuffer<float> &delayBuffer, int channel, float* channelData, int bufferSize, int delayBufferSize);
     void readFromBuffer(juce::AudioBuffer<float> &buffer, juce::AudioBuffer<float> &delayBuffer,int channel, float* channelData, int bufferSize, int delayBufferSize);
     
@@ -41,6 +42,7 @@ private:
     float linearInterpolation(float* buffer, float readPosition, int bufferSize);
     
     float allPassInterpolation(float* buffer, float readPosition, int bufferSize, float baseDelay);
+    void processFilter(float averageDelay, Filter filter);
     
     int writePosition { 0 };
     float feedback = { 0.0f }; // g
