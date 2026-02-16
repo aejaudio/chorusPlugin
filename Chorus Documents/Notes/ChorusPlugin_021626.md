@@ -60,7 +60,7 @@ Input → BBD Delay Stages → Lowpass Filter → Saturation → Mix → Output
 ### Architecture
 - Separate filters for left/right channels
 - Linear interpolation
-- Coefficient smoothin
+- Coefficient smoothing
 
 
 ## Known Issues / Future Improvements
