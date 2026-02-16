@@ -18,14 +18,14 @@ Chorus2AudioProcessorEditor::Chorus2AudioProcessorEditor (Chorus2AudioProcessor&
     setSize (600, 300);
 
     
-    delayTimeLabel.setText("Base Delay", juce::dontSendNotification);
-    delayTimeLabel.setJustificationType(juce::Justification(juce::Justification::centred));
-    addAndMakeVisible(delayTimeLabel);
+//    delayTimeLabel.setText("Base Delay", juce::dontSendNotification);
+//    delayTimeLabel.setJustificationType(juce::Justification(juce::Justification::centred));
+//    addAndMakeVisible(delayTimeLabel);
     
     // Depth
     depthKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
     depthKnob.setTextBoxStyle(juce::Slider::TextEntryBoxPosition::TextBoxBelow, true, 50, 10);
-    depthKnob.setRange(0.00f, 0.08f, 0.015f);
+    depthKnob.setRange(0.001f, 0.008f, 0.015f);
     addAndMakeVisible(depthKnob);
     
     depthLabel.setText("Depth", juce::dontSendNotification);

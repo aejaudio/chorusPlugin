@@ -5,10 +5,12 @@ void Chorus::prepare(double sampleRate)
 {
 
     delayLine->prepare(sampleRate);
+    rate = 0.1f;
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
-    baseDelay = 0.040f;
-    depth = 0.005f;
+//    baseDelay = 0.015f;
+    delayLine->setDelayTime(baseDelay);
+//    depth = 0.015f;
     mix = 0.5f;
     
     // Initialze depth smoothing
@@ -64,6 +66,19 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
         float delay2 = calculateTotalDelay(baseDelay, mod2);
         float delay3 = calculateTotalDelay(baseDelay, mod3);
         
+        static int counter = 0;
+            if (++counter % 48000 == 0)
+            {
+                std::cout << "BaseDelay: " << baseDelay
+                          << " | Depth: " << depth
+                          << " | LFO1: " << lfo1
+                          << " | Mod1: " << mod1
+                          << " | Delay1: " << delay1
+                          << " | Delay2: " << delay2
+                          << " | Delay3: " << delay3 << std::endl;
+            }
+            
+        
         std::vector<float> delays = {delay1, delay2, delay3};
         // Process single sample
         delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft);
@@ -95,7 +110,7 @@ float Chorus::modulation(float depth, float lfo)
 void Chorus::setDepth(float newDepth)
 {
     
-    targetDepth = juce::jlimit(0.001f, 0.010f, newDepth);
+    targetDepth = juce::jlimit(0.00f, 0.08f, newDepth);
     
     // Scale depth based on rate
     if (rate > 2.0f)
@@ -110,7 +125,7 @@ float Chorus::calculateTotalDelay(float baseDelay, float mod)
 {
     float totalDelay = baseDelay + mod;
     
-    totalDelay = juce::jlimit(0.001f, 0.050f, totalDelay);
+    totalDelay = juce::jlimit(0.005f, 0.050f, totalDelay);
     
     return totalDelay;
 }
@@ -157,54 +172,54 @@ void Chorus::setWidth(float newWidth)
 
 float Chorus::setPhase(float newWidth)
 {
-    float pi = juce::MathConstants<float>::twoPi;
+    float pi = juce::MathConstants<float>::pi;
     float phase = 0.0f;
     
     int widthInt = static_cast<int>(std::round(newWidth));
     switch (widthInt)
     {
         case 1:
-            phase = pi * 0.25f;
+            phase = pi * 0.01f;
             break;
             
         case 2:
-            phase = pi * 0.5f;
+            phase = pi * 0.02f;
             break;
             
         case 3:
-            phase = pi * 0.75f;
+            phase = pi * 0.03f;
             break;
             
         case 4:
-            phase = pi * 1.0f;
+            phase = pi * 0.04f;
             break;
             
         case 5:
-            phase = pi * 1.5f;
+            phase = pi * .05f;
             break;
             
         case 6:
-            phase = pi * 2.0f;
+            phase = pi * 0.06f;
             break;
             
         case 7:
-            phase = pi * 2.5f;
+            phase = pi * 0.07f;
             break;
         
         case 8:
-            phase = pi * 3.0f;
+            phase = pi * 0.08f;
             break;
             
         case 9:
-            phase = pi * 3.5f;
+            phase = pi * 0.09f;
             break;
             
         case 10:
-            phase = pi * 4.0f;
+            phase = pi * 0.1f;
             break;
             
         default:
-            phase = pi * 0.5f;
+            phase = pi * 0.05f;
             break;
         }
     

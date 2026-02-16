@@ -97,8 +97,8 @@ void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
 {
 
 
-    delayTimeParameter = apvts.getRawParameterValue("DELAYTIME");
-    jassert (delayTimeParameter != nullptr);
+//    delayTimeParameter = apvts.getRawParameterValue("DELAYTIME");
+//    jassert (delayTimeParameter != nullptr);
     
     depthParameter = apvts.getRawParameterValue("DEPTH");
     jassert(depthParameter != nullptr);
@@ -172,7 +172,7 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
 
     // Load atomic float from apvts thread safe
     // Read current value stored in feedbackParameter and return as float
-    chorus.setBaseDelay(0.12f);
+    chorus.setBaseDelay(0.015f);
     chorus.setRate(rateParameter->load(std::memory_order_relaxed), sampleRate);
     chorus.setDepth(depthParameter->load(std::memory_order_relaxed));
     chorus.setMix(mixParameter->load(std::memory_order_relaxed));
@@ -260,7 +260,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout
 //                              juce::NormalisableRange<float>
 //                              ( 0.010f, 0.040f), 0.020f));
         
-        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.01f, 0.08), 0.015f));
+        parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.001f, 0.008), 0.015f));
         
         parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"RATE", 1}, "Rate", juce::NormalisableRange<float> (0.1f, 5.0f), 1.0f));
         
