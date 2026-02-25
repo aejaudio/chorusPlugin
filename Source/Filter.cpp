@@ -124,7 +124,7 @@ float Filter::asymmetricSaturation(float input, float driveAdd, float driveSubtr
     }
     else
     {
-        float output = saturate(input, driveAdd);
+        float output = saturate(input, driveSubtract);
         return output;
     }
     

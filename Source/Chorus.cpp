@@ -197,7 +197,7 @@ void Chorus::setWidth(float newWidth)
     // Right channel opposite phases
     lfoPhase4 = pi;
     lfoPhase5 = pi + phase / 3.0f;
-    lfoPhase6 = pi + (phase * 2.0f) / 3.0f;
+    lfoPhase6 = pi + (phase * 2.0f) / 5.0f;
     lfoPhase10 = (phase * 3.0f) / 5.0f;
     lfoPhase11 = (phase * 4.0f) / 5.0f;
     lfoPhase12 = phase;
