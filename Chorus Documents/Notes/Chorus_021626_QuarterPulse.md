@@ -1,4 +1,4 @@
-#Chorus Plugin - Ashley Jacobson
+# Chorus Plugin - Ashley Jacobson
 
 Multiband Chorus effect plugin built with JUCE.
 - Currently no multiband implementation 
