@@ -21,10 +21,8 @@ void DelayLine::reset()
     writePosition = 0;
 }
 
-void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft, std::vector<double> voiceMixes)
+void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft)
 {
-    // reduce input to prevent clipping
-//    sample *= 0.7f;
     
     float averageDelay = (delays[0] + delays[1] + delays[2] + delays[3] + delays[4] + delays[5]) / 6.0f;
 
@@ -50,13 +48,14 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
         // Read delayed sample with interpolation
         float delayedSample = linearInterpolation(delayData, currentReadPosition, delayBufferSize);
   
-          delaySum += delayedSample * voiceMixes.at(i);
+        delaySum += delayedSample;
         
     }
     delaySum = delaySum / 6.0f;
     
     // write input to delay line
     delayData[writePos] = inputSample;
+    
     if (isLeft)
     {
         delaySum = filterL.biquadFilter(delaySum);
@@ -93,10 +92,12 @@ float DelayLine::linearInterpolation(float* buffer, float readPosition, int buff
     int index2 = (index1 + 1) % bufferSize;
     
     index1 = index1 % bufferSize;
+    
     // Get fraction: if readPosition is 20.7f then (readPosition - index1) would be .7 (20.7-20 = .7)
     float fraction = readPosition - static_cast<float>(index1);
     
     fraction = juce::jlimit(0.0f, 1.0f, fraction);
+    
     // Interpolate
     // y = (1 - t)y₀ + ty₁
     // y₀ = start value
@@ -105,57 +106,6 @@ float DelayLine::linearInterpolation(float* buffer, float readPosition, int buff
     // y = interpolated result
     float result = buffer[index1] * (1.0f - fraction) + buffer[index2] * fraction;
     return result;
-}
-
-float DelayLine::allPassInterpolation(float* buffer, float readPosition, int bufferSize, float baseDelay)
-{
-
-    
-    while (readPosition < 0.0f)
-        readPosition += bufferSize;
-    
-    while (readPosition >= bufferSize)
-    {
-        readPosition -= bufferSize;
-    }
-    
-    int index1 = static_cast<int>(readPosition);
-    int index2 = (index1 + 1) % bufferSize;
-    index1 = index1 % bufferSize;
-    
-    float fraction = readPosition - static_cast<float>(index1);
-    fraction = juce::jlimit(0.0f, 1.0f, fraction);
-    
-    //First-Order Allpass Interpolation
-    // (y(n)= eta * x(n)+x(n-1)-eta * y(n-1)
-    // y(n) = current output sample
-    // x(n) = current input sample
-    // x(n-1) = previous input sample
-    // y(n-1) = previous output sample
-    // eta = allpass coefficient:
-    // 1 - d
-    // ------
-    // 1 + d
-    // d = desired delay
-    float eta = ((1 - baseDelay) / (1 + baseDelay));
-    float result = buffer[writePosition] * eta + buffer[writePosition - 1] - eta * buffer[index1];
-    
-    return result;
-}
-void DelayLine::setFeedback(float newFeedback)
-{
-    // Clamp it for stability (never goes to 1.0 or higher)
-    feedback = juce::jlimit (0.0f, 0.9f, newFeedback);
-}
-
-void DelayLine::setDelayTime(float newDelayTime)
-{
-    delayTime = juce::jlimit (0.015f, 0.025f, newDelayTime);
-}
-
-float DelayLine::getDelayTime()
-{
-    return delayTime;
 }
 
 float DelayLine::calculateDelayFloat(float totalDelay, double sampleRate)
@@ -173,4 +123,7 @@ void DelayLine::processFilter(float averageDelay, Filter filter)
         updateCounter = 0;
     }
 }
-
+void DelayLine::setDelayTime(float newDelayTime)
+{
+    delayTime = juce::jlimit (0.015f, 0.025f, newDelayTime);
+}

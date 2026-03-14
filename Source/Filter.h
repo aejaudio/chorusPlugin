@@ -17,9 +17,9 @@ public:
     
     float asymmetricSaturation(float input, float driveAdd, float driveSubtract);
     float saturate(float input, float drive);
+    void calculate(float cutoff);
     
 private:
-//    DelayLine delay;
     
     double sampleRate;
     

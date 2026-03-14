@@ -12,7 +12,6 @@
 #include "DelayLine.h"
 #include "Chorus.h"
 #include "Filter.h"
-#include "Pulse.h"
 
 //==============================================================================
 /**
@@ -68,11 +67,7 @@ private:
     int delayBufferSize;
     
     Chorus chorus;
-    Pulse pulse;
     
-    
-//    juce::AudioProcessorValueTreeState& apvts;
-
     // Can be accessed by multiple threads simultaneously (Audio and GUI)
     std::atomic<float>* feedbackParameter = nullptr;
     std::atomic<float>* delayTimeParameter = nullptr;
@@ -84,7 +79,6 @@ private:
     int leftWritePos = 0;
     int rightWritePos = 0;
     
-    // Keep track of DAW tempo
-    double currentBPM;
+
     
 };

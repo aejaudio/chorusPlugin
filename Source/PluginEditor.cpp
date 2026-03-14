@@ -16,11 +16,6 @@ Chorus2AudioProcessorEditor::Chorus2AudioProcessorEditor (Chorus2AudioProcessor&
     // Make sure that before the constructor has finished, you've set the
     // editor's size to whatever you need it to be.
     setSize (600, 300);
-
-    
-//    delayTimeLabel.setText("Base Delay", juce::dontSendNotification);
-//    delayTimeLabel.setJustificationType(juce::Justification(juce::Justification::centred));
-//    addAndMakeVisible(delayTimeLabel);
     
     // Depth
     depthKnob.setSliderStyle(juce::Slider::RotaryVerticalDrag);
@@ -101,8 +96,6 @@ void Chorus2AudioProcessorEditor::resized()
     
     widthLabel.setBounds(360, 60, knobSize, 20);
     widthKnob.setBounds(360, 85, knobSize, knobSize);
-//    
-//    widthLabel.setBounds(480, 60, knobSize, 20);
-//    widthKnob.setBounds(480, 85, knobSize, knobSize);
+
 }
 

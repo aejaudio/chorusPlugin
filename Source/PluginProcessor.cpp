@@ -96,9 +96,6 @@ void Chorus2AudioProcessor::changeProgramName (int index, const juce::String& ne
 void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBlock)
 {
 
-
-//    delayTimeParameter = apvts.getRawParameterValue("DELAYTIME");
-//    jassert (delayTimeParameter != nullptr);
     
     depthParameter = apvts.getRawParameterValue("DEPTH");
     jassert(depthParameter != nullptr);
@@ -179,28 +176,7 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     chorus.setWidth(widthParameter->load(std::memory_order_relaxed));
     
     int bufferSize = buffer.getNumSamples(); // buffer size
-    
-    auto* playHead = getPlayHead();
-    
-    if(playHead != nullptr)
-    {
-        auto positionInfo = playHead->getPosition();
-        
-        if (auto bpm = positionInfo->getBpm())
-        {
-            pulse.setBPM(*bpm);
-        }
-        if (auto ppqPosition = positionInfo->getPpqPosition())
-        {
-            pulse.setPosition(*ppqPosition);
-        }
-        if (auto isPlaying = positionInfo->getIsPlaying())
-        {
-            pulse.setIsPlaying(isPlaying);
-        }
-    }
-    
-    chorus.setPulse(pulse);
+
     // Process left channel
        if (totalNumInputChannels > 0)
        {
@@ -274,11 +250,6 @@ juce::AudioProcessorValueTreeState::ParameterLayout
                               juce::NormalisableRange<float> // range( min, max )
                               ( 0.0f, 0.9f), 0.7f));         // default value
         
-//        parameters.push_back(std::make_unique<juce::AudioParameterFloat>
-//                             ( juce::ParameterID {"DELAYTIME",1},
-//                              "Base Delay",
-//                              juce::NormalisableRange<float>
-//                              ( 0.010f, 0.040f), 0.020f));
         
         parameters.push_back(std::make_unique<juce::AudioParameterFloat> (juce::ParameterID{"DEPTH", 1}, "Depth", juce::NormalisableRange<float> (0.001f, 0.008), 0.015f));
         

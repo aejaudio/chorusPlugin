@@ -14,17 +14,15 @@ public:
 
     ~DelayLine();
     void prepare(double sampleRate);
-    void processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, int sampleRate, float totalDelay);
     void setDelayTime(float newDelayTime);
     void reset();
-    void setFeedback(float newFeedback);
-    float getFeedback() const noexcept { return feedback;}
     int getDelayBufferSize();
     int delayGetNumSamples();
     float getDelayTime();
     void calculateTotalDelay();
-    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft,std::vector<double> voiceMixes);
+    void processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft);
     float calculateDelayFloat(float totalDelay, double sampleRate);
+    
     
 private:
     

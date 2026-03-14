@@ -8,8 +8,7 @@ void Chorus::prepare(double sampleRate)
     rate = 0.1f;
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
-//    baseDelay = 0.015f;
-//    delayLine->setDelayTime(baseDelay);
+
     depth = 0.015f;
     mix = 0.5f;
     
@@ -52,16 +51,7 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
             lfo4 = lfo(lfoPhase7);
             lfo5 = lfo(lfoPhase8);
             lfo6 = lfo(lfoPhase9);
-            
-            voicePhase1 = currentPosition * twoPi;
-            voiceMix1 = (sin(voicePhase1) * 0.5f) + 0.5f;
-            
-            voicePhase2 = currentPosition * 0.5f * twoPi;
-            voiceMix2 = (sin(voicePhase2) * 0.5f) + 0.5f;
-            
-            voicePhase3 = currentPosition * 0.25f * twoPi;
-            voiceMix3 = (sin(voicePhase3) * 0.5f) + 0.5f;
-\
+
             mod1 = modulation(currentDepth, lfo1);
             mod2 = modulation(currentDepth, lfo2);
             mod3 = modulation(currentDepth, lfo3);
@@ -77,16 +67,6 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
             lfo4 = lfo(lfoPhase10);
             lfo5 = lfo(lfoPhase11);
             lfo6 = lfo(lfoPhase12);
-
-            
-            voicePhase4 = currentPosition * twoPi;
-            voiceMix4 = (sin(voicePhase4) * 0.5f) + 0.5f;
-            
-            voicePhase5 = currentPosition * 0.5f * twoPi;
-            voiceMix5 = (sin(voicePhase5) * 0.5f) + 0.5f;
-            
-            voicePhase3 = currentPosition * 0.25f * twoPi;
-            voiceMix6 = (sin(voicePhase6) * 0.5f) + 0.5f;
             
             mod1 = modulation(currentDepth, lfo1);
             mod2 = modulation(currentDepth, lfo2);
@@ -106,9 +86,8 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
             
         
         std::vector<float> delays = {delay1, delay2, delay3, delay4, delay5, delay6};
-        std::vector<double> voiceMixes = { voiceMix1, voiceMix2, voiceMix3, voiceMix4, voiceMix5, voiceMix6 };
         // Process single sample
-        delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft, voiceMixes);
+        delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft);
         // Safety clip
         bufferData[i] = juce::jlimit((-1.0f), 1.0f, bufferData[i]);
     }
@@ -259,9 +238,3 @@ float Chorus::setPhase(float newWidth)
     return phase;
 }
 
-
-
-void Chorus::setPulse(Pulse pulse)
-{
-    currentPosition = pulse.getPosition();
-}
