@@ -85,17 +85,18 @@ void Chorus2AudioProcessorEditor::resized()
 {
     
     int knobSize = 100;
-    depthLabel.setBounds(120, 60, knobSize, 20);
-    depthKnob.setBounds(120, 85, knobSize, knobSize);
+    int offsetX = 50;
+    depthLabel.setBounds(offsetX + 120, 60, knobSize, 20);
+    depthKnob.setBounds(offsetX + 120, 85, knobSize, knobSize);
     
-    rateLabel.setBounds(20, 60, knobSize, 20);
-    rateKnob.setBounds(20, 85, knobSize, knobSize);
+    rateLabel.setBounds(offsetX + 20, 60, knobSize, 20);
+    rateKnob.setBounds(offsetX + 20, 85, knobSize, knobSize);
     
-    mixLabel.setBounds(240, 60, knobSize, 20);
-    mixKnob.setBounds(240, 85, knobSize, knobSize);
+    mixLabel.setBounds(offsetX + 240, 60, knobSize, 20);
+    mixKnob.setBounds(offsetX + 240, 85, knobSize, knobSize);
     
-    widthLabel.setBounds(360, 60, knobSize, 20);
-    widthKnob.setBounds(360, 85, knobSize, knobSize);
+    widthLabel.setBounds(offsetX + 360, 60, knobSize, 20);
+    widthKnob.setBounds(offsetX + 360, 85, knobSize, knobSize);
 
 }
 
