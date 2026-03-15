@@ -8,4 +8,4 @@ JUCE v8.0.7
 
 ## Usage
 
-_For more examples, please refer to the [Documentation](https://github.com/aejaudio/chorusPlugin1)
+_For more examples, please refer to the [Documentation](https://github.com/aejaudio/chorusPlugin1/tree/main/Chorus%20Documents)
