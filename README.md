@@ -1,4 +1,4 @@
-# Chorus Plugin
+# Chorus Plugin - Personal Project
 
 ## Overview
 
