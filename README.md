@@ -19,7 +19,7 @@ For more examples, please refer to the [Documentation](https://github.com/aejaud
 - 6 voices, 3 for each channel 
 - Stereo width control
 - Custom delay line
-- Adjust rate, depth, mix, and width parameters
+- Adjustable rate, depth, mix, and width parameters
 
 
 
