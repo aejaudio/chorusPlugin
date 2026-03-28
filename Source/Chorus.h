@@ -11,9 +11,10 @@ public:
     Chorus(juce::AudioProcessorValueTreeState& apvts) : delayLine(std::make_unique<DelayLine>(apvts)){}
     ~Chorus();
     
-    void prepare(double sampleRate);
-    void processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, double sampleRate, int& writePos, bool isLeft);
+    void prepare(double sampleRate, int widthValue);
+    void processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, double sampleRate, int& writePos, bool isLeft, int widthValue);
     void reset();
+    void resetDelays(double sampleRate);
     void setDepth(float newDepth);
     float modulation(float depth, float lfo);
     float getModulation();
@@ -21,10 +22,17 @@ public:
     void setBaseDelay(float newBaseDelay);
     void setRate(float newRate, double sampleRate);
     void setMix(float newMix);
-    void setWidth(float newWidth);
-    float setPhase(float newWidth);
+    void setWidth(float newWidth, float phase);
+    float getPhase(float newWidth);
+    void updateDelay(int width);
+    
+    void updateMod(bool isLeft, int bufferSize);
+    
+    int getWidth();
     
 private:
+    
+    
     float lfo1;
     float lfo2;
     float lfo3;
@@ -45,6 +53,14 @@ private:
     float lfoPhase11;
     float lfoPhase12;
     int width = 1;
+    
+    juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> phaseSmoothing { 0.0f };
+
+    int previousWidthValue;
+//    juce::LinearSmoothedValue<float> delay1, delay2, delay3, delay4, delay5, delay6;
+//    float delay1, delay2, delay3, delay4, delay5, delay6;
+    
+//    std::vector<juce::LinearSmoothedValue<float>> delays = {delay1, delay2, delay3, delay4, delay5, delay6};
     
     // Frequency of LFO in Hz
     // Cycles per second
@@ -68,8 +84,6 @@ private:
     
     int leftWritePosition = 0;
     int rightWritePosition = 0;
-    
-    juce::SmoothedValue<float> smoothedRate;
     
     float targetDepth = 0.005f;
     float currentDepth = 0.005f;

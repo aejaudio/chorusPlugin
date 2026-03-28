@@ -120,8 +120,9 @@ void Chorus2AudioProcessor::prepareToPlay (double sampleRate, int samplesPerBloc
         delayBuffer.setSize(getTotalNumOutputChannels(), delayBufferSize);
         delayBuffer.clear();
     }
-
-    chorus.prepare(sampleRate);
+    
+    auto widthValue = apvts.getRawParameterValue ("WIDTH")->load();
+    chorus.prepare(sampleRate, widthValue);
 
 }
 
@@ -168,29 +169,33 @@ void Chorus2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce
     auto sampleRate = getSampleRate();
 
     // Load atomic float from apvts thread safe
-    // Read current value stored in feedbackParameter and return as float
     chorus.setBaseDelay(0.025f);
     chorus.setRate(rateParameter->load(std::memory_order_relaxed), sampleRate);
     chorus.setDepth(depthParameter->load(std::memory_order_relaxed));
     chorus.setMix(mixParameter->load(std::memory_order_relaxed));
-    chorus.setWidth(widthParameter->load(std::memory_order_relaxed));
+    
+
+    chorus.setWidth(widthParameter->load(std::memory_order_relaxed), chorus.getPhase(widthParameter->load(std::memory_order_relaxed)));
+    
+    auto widthValue = apvts.getRawParameterValue ("WIDTH")->load();
+    
     
     int bufferSize = buffer.getNumSamples(); // buffer size
-
+    
     // Process left channel
-       if (totalNumInputChannels > 0)
+    if (totalNumInputChannels > 0)
        {
            auto* leftBufferData = buffer.getWritePointer(0);
            auto* leftDelayData = delayBuffer.getWritePointer(0);
-           chorus.processBlock(leftBufferData, leftDelayData, bufferSize, delayBufferSize, sampleRate ,leftWritePos, true);
+           chorus.processBlock(leftBufferData, leftDelayData, bufferSize, delayBufferSize, sampleRate ,leftWritePos, true, widthValue);
        }
     // Process right Channel
-        if (totalNumInputChannels > 1)
-        {
-            auto* rightBufferData = buffer.getWritePointer(1);
-            auto* rightDelayData = delayBuffer.getWritePointer(1);
-            chorus.processBlock(rightBufferData, rightDelayData, bufferSize, delayBufferSize, sampleRate, rightWritePos, false);
-        }
+    if (totalNumInputChannels > 1)
+    {
+        auto* rightBufferData = buffer.getWritePointer(1);
+        auto* rightDelayData = delayBuffer.getWritePointer(1);
+        chorus.processBlock(rightBufferData, rightDelayData, bufferSize, delayBufferSize, sampleRate, rightWritePos, false, widthValue);
+    }
 }
 
 //==============================================================================

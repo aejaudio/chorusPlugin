@@ -23,8 +23,14 @@ void DelayLine::reset()
 
 void DelayLine::processSample(float& sample, float* delayData, int delayBufferSize, double sampleRate, std::vector<float> delays, int& writePos, float baseDelay, float mix, bool isLeft)
 {
+    float averageDelay = 0;
+    for(int i = 0; i < delays.size(); i++)
+    {
+        averageDelay += delays[i];
+    }
     
-    float averageDelay = (delays[0] + delays[1] + delays[2] + delays[3] + delays[4] + delays[5]) / 6.0f;
+    averageDelay /= 6.0f;
+    
 
     if (isLeft)
     {
@@ -40,7 +46,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
     float delaySum = 0;
     for (int i = 0; i < delays.size(); i++)
     {
-        float delaySamplesFloat = calculateDelayFloat(delays.at(i), sampleRate);
+        float delaySamplesFloat = calculateDelayFloat(delays[i], sampleRate);
 
         // Calculate read position for linear interpolation
         float currentReadPosition = static_cast<float>(writePos) - delaySamplesFloat;
@@ -67,7 +73,7 @@ void DelayLine::processSample(float& sample, float* delayData, int delayBufferSi
         delaySum = filterR.asymmetricSaturation(delaySum, 2.0f, 1.0f);
     }
     
-    delaySum *= 3.0f;
+    delaySum *= 2.0f;
     sample = (inputSample * (1.0 - mix)) + (delaySum * mix);
     
     // Increment write position

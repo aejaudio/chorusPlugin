@@ -76,6 +76,8 @@ private:
     std::atomic<float>* mixParameter = nullptr;
     std::atomic<float>* widthParameter = nullptr;
     
+    int previousWidth = 0;
+    
     int leftWritePos = 0;
     int rightWritePos = 0;
     

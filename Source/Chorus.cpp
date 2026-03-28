@@ -1,10 +1,13 @@
 
 #include "Chorus.h"
 #include <fstream>
-void Chorus::prepare(double sampleRate)
+void Chorus::prepare(double sampleRate, int widthValue)
 {
 
     delayLine->prepare(sampleRate);
+    
+    phaseSmoothing.reset(sampleRate, 0.05);
+    phaseSmoothing.setCurrentAndTargetValue((float)widthValue);
     rate = 0.1f;
     // Calculate how much phase to add per sample to achieve desired frequency
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
@@ -34,15 +37,24 @@ void Chorus::reset()
 {
     delayLine->reset();
 }
-void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, double sampleRate, int& writePos, bool isLeft)
+
+void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, int delayBufferSize, double sampleRate, int& writePos, bool isLeft, int widthValue)
 {
  
     currentDepth += (targetDepth - currentDepth) * 0.001f;
     lfoIncrement = (rate * juce::MathConstants<float>::twoPi) / sampleRate;
+    
+    if (widthValue != previousWidthValue)
+    {
+        phaseSmoothing.setTargetValue((float)widthValue);
+        previousWidthValue = widthValue;
+    }
+
     for (int i = 0; i < bufferSize; ++i)
     {
-        
-        
+      
+        float spread = getPhase(phaseSmoothing.getNextValue());
+
         if (isLeft)
         {
             lfo1 = lfo(lfoPhase1);
@@ -61,12 +73,21 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
         }
         else
         {
-            lfo1 = lfo(lfoPhase4);
-            lfo2 = lfo(lfoPhase5);
-            lfo3 = lfo(lfoPhase6);
-            lfo4 = lfo(lfoPhase10);
-            lfo5 = lfo(lfoPhase11);
-            lfo6 = lfo(lfoPhase12);
+            
+            // Advance phase
+            lfo(lfoPhase4);
+            lfo(lfoPhase5);
+            lfo(lfoPhase6);
+            lfo(lfoPhase10);
+            lfo(lfoPhase11);
+            lfo(lfoPhase12);
+            
+            lfo1 = std::sin(lfoPhase4 + spread);
+            lfo2 = std::sin(lfoPhase5 + spread);
+            lfo3 = std::sin(lfoPhase6 + spread);
+            lfo4 = std::sin(lfoPhase10 + spread);
+            lfo5 = std::sin(lfoPhase11 + spread);
+            lfo6 = std::sin(lfoPhase12 + spread);
             
             mod1 = modulation(currentDepth, lfo1);
             mod2 = modulation(currentDepth, lfo2);
@@ -74,8 +95,10 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
             mod4 = modulation(currentDepth, lfo4);
             mod5 = modulation(currentDepth, lfo5);
             mod6 = modulation(currentDepth, lfo6);
+            
+        
         }
-    
+        
         float delay1 = calculateTotalDelay(baseDelay, mod1);
         float delay2 = calculateTotalDelay(baseDelay, mod2);
         float delay3 = calculateTotalDelay(baseDelay, mod3);
@@ -83,9 +106,8 @@ void Chorus::processBlock(float* bufferData, float* delayData, int bufferSize, i
         float delay5 = calculateTotalDelay(baseDelay, mod5);
         float delay6 = calculateTotalDelay(baseDelay, mod6);
     
-            
-        
         std::vector<float> delays = {delay1, delay2, delay3, delay4, delay5, delay6};
+            
         // Process single sample
         delayLine->processSample(bufferData[i], delayData, delayBufferSize, sampleRate, delays, writePos, baseDelay, mix, isLeft);
         // Safety clip
@@ -154,87 +176,24 @@ void Chorus::setMix(float newMix)
     mix = newMix;
 }
 
-void Chorus::setWidth(float newWidth)
+void Chorus::setWidth(float newWidth, float phase)
 {
-    if (width == static_cast<int>(std::round(newWidth)))
-        return;
-    
-    width = static_cast<int>(std::round(newWidth));
-    float phase = setPhase(width);
-    float pi = juce::MathConstants<float>::pi;
-    
-    
-    // Distribute phase across voices
-    lfoPhase1 = 0.0f;
-    lfoPhase2 = phase / 5.0f;
-    lfoPhase3 = (phase * 2.0f) / 5.0f;
-    lfoPhase7 = (phase * 3.0f) / 5.0f;
-    lfoPhase8 = (phase * 4.0f) / 5.0f;
-    lfoPhase9 = phase;
-    
-    
-    // Right channel opposite phases
-    lfoPhase4 = pi;
-    lfoPhase5 = pi + phase / 3.0f;
-    lfoPhase6 = pi + (phase * 2.0f) / 5.0f;
-    lfoPhase10 = (phase * 3.0f) / 5.0f;
-    lfoPhase11 = (phase * 4.0f) / 5.0f;
-    lfoPhase12 = phase;
-}
-
-float Chorus::setPhase(float newWidth)
-{
-    float pi = juce::MathConstants<float>::pi;
-    float phase = 0.0f;
-    
-    int widthInt = static_cast<int>(std::round(newWidth));
-    switch (widthInt)
+    if (width != static_cast<int>(std::round(newWidth)))
     {
-        case 1:
-            phase = pi * 0.01f;
-            break;
-            
-        case 2:
-            phase = pi * 0.02f;
-            break;
-            
-        case 3:
-            phase = pi * 0.03f;
-            break;
-            
-        case 4:
-            phase = pi * 0.04f;
-            break;
-            
-        case 5:
-            phase = pi * .05f;
-            break;
-            
-        case 6:
-            phase = pi * 0.06f;
-            break;
-            
-        case 7:
-            phase = pi * 0.07f;
-            break;
-        
-        case 8:
-            phase = pi * 0.08f;
-            break;
-            
-        case 9:
-            phase = pi * 0.09f;
-            break;
-            
-        case 10:
-            phase = pi * 0.1f;
-            break;
-            
-        default:
-            phase = pi * 0.05f;
-            break;
-        }
+        width = static_cast<int>(std::round(newWidth));
+        phaseSmoothing.setTargetValue(getPhase(width));
+    }
     
-    return phase;
 }
 
+float Chorus::getPhase(float newWidth)
+{
+    
+    int widthInt = juce::jlimit(1, 10, static_cast<int>(std::round(newWidth)));
+    return widthInt * 0.01f * juce::MathConstants<float>::pi;
+}
+
+int Chorus::getWidth()
+{
+    return width;
+}
