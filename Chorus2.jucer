@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="KMr1o6" name="Chorus2" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" companyWebsite="DaughterHouse"
+              pluginFormats="buildAU" bundleIdentifier="com.DaughterHouse.Chorus2">
   <MAINGROUP id="DZmpQM" name="Chorus2">
     <GROUP id="{14FB03E9-A33C-29FB-3741-8057F8A036A2}" name="Source">
       <FILE id="SKQz94" name="PluginProcessor.cpp" compile="1" resource="0"
