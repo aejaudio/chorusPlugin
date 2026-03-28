@@ -3,7 +3,7 @@
 ## Overview
 
 - Stereo chorus built with JUCE. 
-- Built around a custom Chorus class that handles the DSP independent of the PluginProcessor. 
+- Implemeneted a custom Chorus and DelayLine class independent of the JUCE Framework DSP.
 - Inspired by classic BBD chorus pedals. 
 - Lowpass filtering to simulate BBD reconstruction using Biquad filter. 
 - Stereo width controls that adjust the phase offset of the right and left channels. 
