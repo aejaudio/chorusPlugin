@@ -57,10 +57,6 @@ private:
     juce::SmoothedValue<float, juce::ValueSmoothingTypes::Linear> phaseSmoothing { 0.0f };
 
     int previousWidthValue;
-//    juce::LinearSmoothedValue<float> delay1, delay2, delay3, delay4, delay5, delay6;
-//    float delay1, delay2, delay3, delay4, delay5, delay6;
-    
-//    std::vector<juce::LinearSmoothedValue<float>> delays = {delay1, delay2, delay3, delay4, delay5, delay6};
     
     // Frequency of LFO in Hz
     // Cycles per second
