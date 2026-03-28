@@ -1,4 +1,4 @@
-# Chorus Plugin Inspired by BBD Chorus Pedals
+# Chorus Plugin
 
 ## Overview
 
