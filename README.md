@@ -17,6 +17,9 @@ JUCE v8.0.7
 
 ## Usage
 
+https://github.com/user-attachments/assets/23d8808f-3756-4050-a72a-d503c98e1861
+
+
 For more examples, please refer to the [Documentation](https://github.com/aejaudio/chorusPlugin1/tree/main/Chorus%20Documents)
 
 
