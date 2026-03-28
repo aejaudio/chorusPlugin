@@ -17,8 +17,9 @@ JUCE v8.0.7
 
 ## Usage
 
+<video src="[path/to/video.mp4](https://github.com/user-attachments/assets/62c535bb-dc61-4e24-a980-d40ceecaa880)" width="320" height="240" controls></video>
 
-https://github.com/user-attachments/assets/62c535bb-dc61-4e24-a980-d40ceecaa880
+
 
 
 
