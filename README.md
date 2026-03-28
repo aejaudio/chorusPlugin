@@ -27,7 +27,7 @@ For more examples, please refer to the [Documentation](https://github.com/aejaud
 - Adjustable rate, depth, mix, and width parameters
 
 ## Specifications
-- Supported platformss: Mac OS
+- Supported platforms: Mac OS
 - Supported formats: AU
 - C++17
 
