@@ -6,6 +6,8 @@ Stereo chorus built with JUCE
 
 JUCE v8.0.7
 
+![Plugin Screenshot](Chorus Screenshot.png)
+
 ## Overview
 
 This chorus is inspird by classic BBD chorus pedals. There is lowpass filtering to simulate BBD reconstruction using a Biquad filter. There are stereo width controls that adjust the phase offset of the right and left channels. 
