@@ -6,7 +6,7 @@ Stereo chorus built with JUCE
 
 JUCE v8.0.7
 
-![Plugin Screenshot](Chorus Screenshot.png)
+![Plugin Screenshot](Chorus-Screenshot.png)
 
 ## Overview
 
